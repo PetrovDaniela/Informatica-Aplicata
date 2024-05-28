@@ -1,0 +1,33 @@
+import csv
+
+def read_data(filename):
+    data = []
+    with open(filename, 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            data.append(row)
+    return data
+
+def process_data(data_in, calc_in):
+    processed_data = {}
+    for i, row in enumerate(calc_in[1:], start=1):
+        channel_no, a, b = map(float, row)
+        channel_data = []
+        for sample in data_in[1:]:
+            values = [float(value) for value in sample[1:]]
+            processed_value = a * values[i-1] + b
+            channel_data.append(processed_value)
+        processed_data[int(channel_no)] = channel_data
+    return processed_data
+
+def write_data(filename, processed_data):
+    with open(filename, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Chn. No.'] + list(range(1, len(processed_data[1])+1)))
+        for channel_no, values in processed_data.items():
+            writer.writerow([channel_no] + values)
+
+data_in = read_data('DATA-IN.csv')
+calc_in = read_data('CALC-IN.csv')
+processed_data = process_data(data_in, calc_in)
+write_data('DATA-OUT.csv', processed_data)
