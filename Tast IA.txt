@@ -1,0 +1,66 @@
+13. Să se implementeze o clasă care să configureze trasee şi să calculeze distanțe pentru trasee de 2 sau mai multe localități, primite de la tastatură. Clasa va conţine elemente de tip nod, cu:
+- Denumirea sursei
+- Denumirea destinaţiei
+- Distanţa dintre cele 2,
+și o funcție pentru construirea și afişarea unei liste cu traseul şi calculul distanţei finale. Se va trata o excepţie dacă traseul nu poate fi efectuat. Colecția de noduri şi distanţe disponibile este furnizată într-un fişier de intrare, conținând pe fiecare rând sursa, destinaţia şi distanţa.
+
+class Traseu:
+    def __init__(self):
+        self.noduri = {}
+    
+    def adauga_nod(self, sursa, destinatie, distanta):
+        if sursa not in self.noduri:
+            self.noduri[sursa] = {}
+        self.noduri[sursa][destinatie] = distanta
+
+    def citeste_noduri_din_input(self):
+        while True:
+            try:
+                numar_noduri = int(input("Introduceți numărul de noduri: "))
+                break
+            except ValueError:
+                print("Introduceți un număr valid.")
+
+        for _ in range(numar_noduri):
+            sursa = input("Introduceți sursa: ").strip()
+            destinatie = input("Introduceți destinația: ").strip()
+            while True:
+                try:
+                    distanta = int(input("Introduceți distanța: "))
+                    break
+                except ValueError:
+                    print("Introduceți o distanță validă.")
+            self.adauga_nod(sursa, destinatie, distanta)
+
+    def calculeaza_traseu(self, traseu):
+        distanta_totala = 0
+        try:
+            for i in range(len(traseu) - 1):
+                sursa = traseu[i]
+                destinatie = traseu[i + 1]
+                if sursa in self.noduri and destinatie in self.noduri[sursa]:
+                    distanta_totala += self.noduri[sursa][destinatie]
+                else:
+                    raise ValueError(f"Nu există un traseu direct de la {sursa} la {destinatie}.")
+            return distanta_totala
+        except ValueError as e:
+            print(e)
+            return None
+    
+    def afiseaza_traseu(self, traseu):
+        distanta = self.calculeaza_traseu(traseu)
+        if distanta is not None:
+            print(f"Traseul: {' -> '.join(traseu)}")
+            print(f"Distanța totală: {distanta} km")
+        else:
+            print("Traseul nu poate fi efectuat.")
+
+# Utilizare
+traseu = Traseu()
+traseu.citeste_noduri_din_input()
+
+# Citesc de la tastatură
+traseu_input = input("Introduceți traseul (localitățile separate prin virgulă): ").split(',')
+
+# Afisez traseul si distanta totala
+traseu.afiseaza_traseu([loc.strip() for loc in traseu_input])
