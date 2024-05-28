@@ -1,0 +1,61 @@
+import time
+
+class Sample:
+def __init__(self, e0, e1, e2, e3, e4, e5, digs, cd, time):
+self.e0 = e0
+self.e1 = e1
+self.e2 = e2
+self.e3 = e3
+self.e4 = e4
+self.e5 = e5
+self.digs = digs
+self.cd = cd
+self.time = time
+
+def calculate_samples():
+samples = []
+
+for i in range(6):
+alfa = float(input(f&quot;Introduceți valoarea pentru alfa în iterația {i+1}: &quot;))
+beta = float(input(f&quot;Introduceți valoarea pentru beta în iterația {i+1}: &quot;))
+digs = int(input(&quot;Introduceți valoarea pentru digs (în hexazecimal): &quot;), 16)
+
+e0 = alfa * (i + 1)
+e1 = e0 + alfa
+e2 = e1 - beta
+e3 = e2 - alfa
+
+e4 = e3 + beta
+e5 = e4 / alfa
+
+cd = (digs &amp; 0b11) | ((digs &gt;&gt; 2) &amp; 0b11)
+cd = not ((digs &gt;&gt; 2) &amp; 0b1) and (digs &gt;&gt; 3) | cd
+
+time.sleep(2)
+
+sample = Sample(e0, e1, e2, e3, e4, e5, digs, cd, time.strftime(&quot;%H:%M:%S&quot;))
+samples.append(sample)
+
+return samples
+
+def print_samples(samples):
+print(&quot;S0 S1 S2 S3 S4 S5 Dig0 Dig1 Dig2 Dig3 cd Time&quot;)
+for i, sample in enumerate(samples, start=1):
+print(f&quot;{sample.e0:.2f} {sample.e1:.2f} {sample.e2:.2f} {sample.e3:.2f} {sample.e4:.2f}
+{sample.e5:.2f} &quot;
+f&quot;{(sample.digs &gt;&gt; 3) &amp; 0b1} {(sample.digs &gt;&gt; 2) &amp; 0b1} {(sample.digs &gt;&gt; 1) &amp; 0b1}
+{sample.digs &amp; 0b1} &quot;
+f&quot;{sample.cd} {sample.time}&quot;)
+
+e0_avg = sum(sample.e0 for sample in samples) / len(samples)
+e1_avg = sum(sample.e1 for sample in samples) / len(samples)
+e2_avg = sum(sample.e2 for sample in samples) / len(samples)
+e3_avg = sum(sample.e3 for sample in samples) / len(samples)
+e4_avg = sum(sample.e4 for sample in samples) / len(samples)
+e5_avg = sum(sample.e5 for sample in samples) / len(samples)
+
+print(f&quot;\nE0m E1m E2m E3m E4m E5m&quot;)
+print(f&quot;{e0_avg:.2f} {e1_avg:.2f} {e2_avg:.2f} {e3_avg:.2f} {e4_avg:.2f} {e5_avg:.2f}&quot;)
+
+samples = calculate_samples()
+print_samples(samples)
